@@ -1,30 +1,67 @@
 #include <iostream>
 #include <fstream>
+#include <cstdlib>
 #include "models.h"
 #include "RegisterandLogin.h"
+#include "tools.h"
 
 void registerUser() {
+	bool registration = false;
 	User newuser;
 	//username
-	std::cout << "\nCreate a account name: ";
-	std::cin >> newuser.username;
-	//password
-	std::cout << "Create Password: ";
-	std::cin >> newuser.password;
+	
+	while (true){
+		bool checkname = false;
+		newuser.username = stringinputfilter("Create a account username (Enter 0 to cancel register): ");
+		if (newuser.username == "0") {
+			std::cout << "\nRegistration cancel.";
+			return;
+		}
 
-	std::ofstream outfile("user.txt", std::ios::app);
-	outfile << newuser.username << " " << newuser.password;
-	outfile.close();
-	std::cout << "\nRegister successfully! Please login.\n\n";
+		std::ifstream inFile("user.txt");
+		std::string fileUser, filePass;
+		while (inFile >> fileUser >> filePass) {
+			std::cout << "\nComparing " << newuser.username << " with " << fileUser << '\n';
+			if (newuser.username == fileUser) {
+				checkname = true;
+				break;
+			}
+		}
+		inFile.close();
+
+		if (checkname) {
+			std::cout << "\nUsername has been used. Please type another username.\n";
+			continue;
+		}
+		break;
+	}
+
+	//password
+	newuser.password = stringinputfilter("Create Password: ");
+	registration = true;
+
+	if (registration) {
+		std::ofstream outfile("user.txt", std::ios::app);
+		outfile << newuser.username << " " << newuser.password << std::endl;
+		outfile.close();
+		std::cout << "\nRegister successfully! Please login.\n";
+		clearscreen();
+	}
+	else {
+		std::cout << "\nRegister unsuccessful. Please try again.\n";
+		clearscreen();
+	}
 }
 
 int loginUser(User& currentUser) {
 	std::string inputUser, inputPass;
-	std::cout << "\nEnter your username: ";
-	std::cin >> inputUser;
-	std::cout << "Enter password: ";
-	std::cin >> inputPass;
+	inputUser = stringinputfilter("Enter your username (Enter 0 to cancel login): ");
 
+	if (inputUser == "0") {
+		return 3;
+	}
+
+	inputPass = stringinputfilter("Enter password: ");
 	std::ifstream inFile("user.txt");
 	std::string fileUser, filePass;
 
@@ -35,7 +72,7 @@ int loginUser(User& currentUser) {
 			return 0;
 		}
 	}
-	
-	return 2;
+	inFile.close();
+	return 3;
 }
 

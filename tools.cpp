@@ -3,6 +3,7 @@
 #include <sstream>
 #include <limits>
 #include <string>
+#include <cstdlib>
 
 
 int integerinputfilter(const std::string& prompt) {
@@ -30,13 +31,33 @@ int integerinputfilter(const std::string& prompt) {
 			return -1;
 		}
 	}
-	
-	
 }
 
-//std::string stringinputfilter(const std::string& prompt) {
-//	std::string input;
-//	while (true) {
-//
-//	}
-//}
+std::string stringinputfilter(const std::string& prompt) {
+	std::cin.clear();
+	std::string input;
+
+	while (true) {
+		std::cout << prompt;
+		if (!std::getline(std::cin, input)) {
+			return "";
+		}
+
+		if (input.empty()) {
+			std::cout << "Empty input is not allowed.\n";
+			continue;
+		}
+
+		if (input.find(' ') != std::string::npos) {
+			std::cout << "Input cannot contain space.\n";
+			continue;
+		}
+		return input;
+	}
+}
+
+void clearscreen() {
+	std::cout << "\n-> Press [Enter] to continue...";
+	std::cin.get();
+	system("cls");
+}
