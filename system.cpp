@@ -1,28 +1,50 @@
 #include <iostream>
+#include <fstream>
+#include <vector>
+#include <iomanip>
 #include "system.h"
 #include "tools.h"
+#include "storage.h"
+#include "models.h" 
 
-void managemenu(){
-	int choice;
+void managemenu(User& currentUser, std::vector<Record>& myRecord){
+	readUserRecord(currentUser);
 	bool loggedin = true;
-
 	while (loggedin) {
+		double totalsavings = 0.0;
+		double totalexpenses = 0.0;
+		double totalbalance;
 		std::cout << "=========================================\n";
 		std::cout << "     Daily Money Management System\n";
 		std::cout << "=========================================\n";
-		std::cout << "1. Add Record\n2. Update Record\n3. Delete Record\n3. Display Record\n0. Exit\n";
-		choice = integerinputfilter("Enter your choice: ");
+		std::cout << "1. Add Record\n2. Update Record\n3. Display Record\n0. Exit\n--------------------------\n";
+		for (const auto& r : currentUser.myRecord) {
+			totalsavings += r.savings;
+			totalexpenses += r.expenses;
+		}
+		totalbalance = totalsavings - totalexpenses;
+		std::cout << "Current Balance: RM " << std::fixed << std::setprecision(2) << totalbalance << "\n--------------------------\n";
+		int choice = integerinputfilter("Enter your choice: ");
 
+		if (choice == -1) {
+			std::cout << "\nInvalid input! Do not include alphabet!\n";
+			continue;
+		}
+		if (choice == -2) {
+			std::cout << "\nInput cannot be empty!\n";
+			continue;
+		}
 		if (choice == 1) {
-			std::cout << "Add record"; //Add new record
+			addrecord(currentUser, myRecord);//Add new record
 			continue;
 		}
 		else if (choice == 2) {
-			std::cout << "Update record"; //update record
+			updaterecord(currentUser, myRecord); //update record
 			continue;
 		}
 		else if (choice == 3) {
-			std::cout << "Delete Record"; //delete record
+			displayrecord(currentUser, myRecord);
+			clearscreen();
 			continue;
 		}
 		else if (choice == 0) { //exit
@@ -36,4 +58,250 @@ void managemenu(){
 			continue;
 		}
 	}
+}
+
+void addrecord(User& currentUser, const std::vector<Record>& myRecord) {
+	readUserRecord(currentUser);
+	int choice;
+	std::string date = formatdate("Enter the date |DDMMYYYY| (Enter 0 to cancel): "); //the function is used to change the date to DDMMYYYY format
+
+	if (date == "0") {
+		std::cout << "\nAdd record cancelled.\n";
+		return;
+	}
+	std::cout << "\n--------------------------\n1. Add Savings\n2. Add Expenses\n--------------------------\n";
+	while (true) {
+		choice = integerinputfilter("Choose an option: ");
+		if (choice == -1) {
+			std::cout << "\nInvalid input! Do not include alphabet!\n";
+			continue;
+		}
+		if (choice == -2) {
+			std::cout << "\nInput cannot be empty!\n";
+			continue;
+		}
+		Record newrecord;
+		newrecord.date = date;
+		if (choice == 1) {
+			double validSavings;
+			newrecord.nameS = stringinputfilter("Enter the name of the savings: ");
+			while (true) {
+				double inputval = doubleinputfilter("Enter the amount of the savings: ");
+
+				if (inputval == -1) {
+					std::cout << "\nInvalid input! Do not include alphabet!\n";
+					continue;
+				}
+				else if (inputval == -2) {
+					std::cout << "\nInput cannot be empty!\n";
+					continue;
+				}
+				else if (inputval == 0) {
+					std::cout << "\nThe amount must be greater than 0!\n";
+					continue;
+				}
+				else {
+					validSavings = inputval;
+					break;
+				}
+			}
+			newrecord.savings = validSavings;
+			newrecord.expenses = 0.0;
+			currentUser.myRecord.push_back(newrecord);		//push back the new expense that is just added into my record
+
+			saveUserRecord(currentUser);	//this function can automatically save the input u just type into txt file
+			std::cout << "\nSuccessfully added savings into record.\n";
+			clearscreen();
+		}
+		if (choice == 2) {
+			//add new record here
+			newrecord.nameE = stringinputfilter("Enter the name of the expense: ");
+			double validExpense;
+			while (true) {
+				double inputval = doubleinputfilter("Enter the amount of the expense: ");
+
+				if (inputval == -1) {
+					std::cout << "\nInvalid input! Do not include alphabet!\n";
+					continue;
+				}
+				else if (inputval == -2) {
+					std::cout << "\nInput cannot be empty!\n";
+					continue;
+				}
+				else if (inputval == 0) {
+					std::cout << "\nThe amount must be greater than 0!\n";
+					continue;
+				}
+				else {
+					validExpense = inputval;
+					break;
+				}
+			}
+			newrecord.expenses = validExpense;
+			newrecord.savings = 0.0;
+			currentUser.myRecord.push_back(newrecord);		//push back the new expense that is just added into my record
+
+			saveUserRecord(currentUser);	//this function can automatically save the input u just type into txt file
+			std::cout << "\nSuccessfully added expense into record.\n";
+			clearscreen();
+		}
+		else {
+			std::cout << "\nInvalid number. Please choose option from 1 and 2 only!\n";
+			break;
+		}
+		break;
+	}
+}
+
+void updaterecord(User& currentUser, std::vector<Record>& myRecord) {
+	readUserRecord(currentUser);
+	if (currentUser.myRecord.empty()) {
+		std::cout << "\nNo record found.\n";
+		return;
+	}
+	std::string finddate = formatdate("Enter the date to update DDMMYYYY (Enter 0 to cancel): ");
+
+	if (finddate == "0") {
+		std::cout << "\nUpdate cancelled.\n";
+		return;
+	}
+	//this is new stuff but I haven't learn this before, in short this is a pointer that can directly change the value with pointer like ->
+	//Record* updaterecord = nullptr;
+	//for (auto& r : currentUser.myRecord) {
+	//	if (r.date == finddate) {
+	//		updaterecord = &r;
+	//		break;
+	//	}
+	//}
+
+	//if (updaterecord == nullptr) {
+	//	std::cout << "\n[ERROR} No record found in date " << finddate << '\n';
+	//	return;
+	//}
+
+	int foundindex = -1;
+	for (size_t i = 0; i < currentUser.myRecord.size(); ++i) {
+		if (currentUser.myRecord[i].date == finddate) {
+			foundindex = static_cast<int>(i);
+			break;
+		}
+	}
+	if (foundindex == -1) {
+		std::cout << "No record found for date " << finddate << '\n';
+		return;
+	}
+	std::cout << "\n--------------------------\n1. Update Savings\n2. Update Expenses\n--------------------------\n";
+	int choice = integerinputfilter("Enter your choice: ");
+	if (choice == 1) {
+		std::cout << "\n--------------------------------------";
+		std::cout << "\nCurrent Name: " << currentUser.myRecord[foundindex].nameS;
+		std::cout << "\nCurrent Savings: " << currentUser.myRecord[foundindex].savings;
+		std::cout << "\n--------------------------------------\n";
+
+		currentUser.myRecord[foundindex].nameS = stringinputfilter("Enter new name: ");
+
+		double validSavings = 0.0;
+		while (true) {
+			double inputval = doubleinputfilter("Enter new savings: ");
+
+			if (inputval == -1) {
+				std::cout << "\nInvalid input! Do not include alphabet!\n";
+				continue;
+			}
+			else if (inputval == -2) {
+				std::cout << "\nInput cannot be empty!\n";
+				continue;
+			}
+			else if (inputval == 0) {
+				std::cout << "\nThe amount must be greater than 0!\n";
+				continue;
+			}
+			else {
+				validSavings = inputval;
+				break;
+			}
+		}
+		currentUser.myRecord[foundindex].savings = validSavings;
+
+		saveUserRecord(currentUser);
+		std::cout << "\nSuccessfully updated!\n";
+		clearscreen();
+	}
+	if (choice == 2) {
+		std::cout << "\n--------------------------------------";
+		std::cout << "\nCurrent Name: " << currentUser.myRecord[foundindex].nameE;
+		std::cout << "\nCurrent Balance: " << currentUser.myRecord[foundindex].expenses;
+		std::cout << "\n--------------------------------------\n";
+
+		currentUser.myRecord[foundindex].nameE = stringinputfilter("Enter new name: ");
+
+		double validExpense = 0.0;
+		while (true) {
+			double inputval = doubleinputfilter("Enter new expense: ");
+
+			if (inputval == -1) {
+				std::cout << "\nInvalid input! Do not include alphabet!\n";
+				continue;
+			}
+			else if (inputval == -2) {
+				std::cout << "\nInput cannot be empty!\n";
+				continue;
+			}
+			else if (inputval == 0) {
+				std::cout << "\nThe amount must be greater than 0!\n";
+				continue;
+			}
+			else {
+				validExpense = inputval;
+				break;
+			}
+		}
+		currentUser.myRecord[foundindex].expenses = validExpense;
+
+		saveUserRecord(currentUser);
+		std::cout << "\nSuccessfully updated!\n";
+		clearscreen();
+	}
+	else {
+		std::cout << "\nInvalid choice. Please try again!\n";
+	}
+}
+
+void displayrecord(User& currentUser, const std::vector<Record>& myRecord) {
+	readUserRecord(currentUser);
+	if (currentUser.myRecord.empty()) {
+		std::cout << "\nNo record found.\n";
+		return;
+	}
+
+	std::cout
+		<< "\n- ---------- - -------------------- - -------------------- - ---------- - ---------- -"
+		<< "\n|    Date    |     Savings'Name     |     Expenses'Name    |   Savings  |  Expenses  |"
+		<< "\n- ---------- - -------------------- - -------------------- - ---------- - ---------- -\n";
+
+	for (const auto& r : currentUser.myRecord) {
+		std::cout << std::left << std::fixed << std::setprecision(2)
+			<< "| " << std::setw(11) << r.date
+			<< "| " << std::setw(21) << r.nameS
+			<< "| " << std::setw(21) << r.nameE
+			<< "| " << std::setw(11) << r.savings
+			<< "| " << std::setw(11) << r.expenses
+			<< "|" << std::endl;
+	}
+	std::cout << "- ---------- - -------------------- - -------------------- - ---------- - ---------- -\n";
+
+	double totalSavings = 0.0;
+	double totalExpenses = 0.0;
+	double totalbalance;
+	for (const auto& r : currentUser.myRecord) {
+		totalSavings += r.savings;
+		totalExpenses += r.expenses;
+	}
+	totalbalance = totalSavings - totalExpenses;
+	std::cout 
+		<< "\n- ------------------------------ -"
+		<< "\n| Total Savings   : RM " << std::setw(8) << totalSavings << "  |"
+		<< "\n| Total Expenses  : RM " << std::setw(8) << totalExpenses << "  |"
+		<< "\n| Current Balance : RM " << std::setw(8) << totalbalance << "  |"
+		<< "\n- ------------------------------ -";
 }

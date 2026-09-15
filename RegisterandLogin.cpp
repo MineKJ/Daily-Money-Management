@@ -58,7 +58,7 @@ int loginUser(User& currentUser) {
 	inputUser = stringinputfilter("Enter your username (Enter 0 to cancel login): ");
 
 	if (inputUser == "0") {
-		return 3;
+		return 2;
 	}
 
 	inputPass = stringinputfilter("Enter password: ");
@@ -73,6 +73,6 @@ int loginUser(User& currentUser) {
 		}
 	}
 	inFile.close();
-	return 3;
+	return 1;
 }
 

@@ -5,4 +5,14 @@
 //Ans: I actually wanna test myself after learning how to code in school and not rely on AI to help me, AI is used for giving idea or checking my code
 //if I am facing any issues during testing.
 
-//
+/*Function of the code for add record
+- Add date
+- Name of the record
+- key in the expenses one by one and calculate total expenses
+
+Function for update 
+- Rename the record
+- add more expenses into the current date
+
+Function for display
+- display specific date of record or display all record*/
