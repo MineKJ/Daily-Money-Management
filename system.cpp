@@ -43,7 +43,7 @@ void managemenu(User& currentUser, std::vector<Record>& myRecord){
 			continue;
 		}
 		else if (choice == 3) {
-			displayrecord(currentUser, myRecord);
+			displayrecord(currentUser, myRecord); //display all record
 			clearscreen();
 			continue;
 		}
@@ -55,8 +55,7 @@ void managemenu(User& currentUser, std::vector<Record>& myRecord){
 		else {
 			std::cout << "\nInvalid option. Please type (0-3) only!\n";
 			clearscreen();
-			continue;
-		}
+			continue;		}
 	}
 }
 
@@ -84,7 +83,12 @@ void addrecord(User& currentUser, const std::vector<Record>& myRecord) {
 		newrecord.date = date;
 		if (choice == 1) {
 			double validSavings;
-			newrecord.nameS = stringinputfilter("Enter the name of the savings: ");
+			newrecord.nameS = stringinputfilter("Enter the name of the savings (Enter 0 to cancel): ");
+			if (newrecord.nameS == "0") {
+				std::cout << "\nAdded Cancelled.\n";
+				clearscreen();
+				return;
+			}
 			while (true) {
 				double inputval = doubleinputfilter("Enter the amount of the savings: ");
 
@@ -115,8 +119,13 @@ void addrecord(User& currentUser, const std::vector<Record>& myRecord) {
 		}
 		if (choice == 2) {
 			//add new record here
-			newrecord.nameE = stringinputfilter("Enter the name of the expense: ");
 			double validExpense;
+			newrecord.nameE = stringinputfilter("Enter the name of the expense (Enter 0 to cancel): ");
+			if (newrecord.nameE == "0") {
+				std::cout << "\nAdded Cancelled.\n";
+				clearscreen();
+				return;
+			}
 			while (true) {
 				double inputval = doubleinputfilter("Enter the amount of the expense: ");
 
