@@ -70,7 +70,7 @@ void addrecord(User& currentUser, const std::vector<Record>& myRecord) {
 	}
 	std::cout << "\n--------------------------\n1. Add Savings\n2. Add Expenses\n--------------------------\n";
 	while (true) {
-		choice = integerinputfilter("Choose an option: ");
+		choice = integerinputfilter("Choose an option (Enter 0 to cancel): ");
 		if (choice == -1) {
 			std::cout << "\nInvalid input! Do not include alphabet!\n";
 			continue;
@@ -78,6 +78,10 @@ void addrecord(User& currentUser, const std::vector<Record>& myRecord) {
 		if (choice == -2) {
 			std::cout << "\nInput cannot be empty!\n";
 			continue;
+		}
+		if (choice == 0) {
+			std::cout << "\nAdd record cancelled.\n";
+			return;
 		}
 		Record newrecord;
 		newrecord.date = date;
@@ -90,7 +94,7 @@ void addrecord(User& currentUser, const std::vector<Record>& myRecord) {
 				return;
 			}
 			while (true) {
-				double inputval = doubleinputfilter("Enter the amount of the savings: ");
+				double inputval = doubleinputfilter("Enter the amount of the savings (Enter 0 to cancel): ");
 
 				if (inputval == -1) {
 					std::cout << "\nInvalid input! Do not include alphabet!\n";
@@ -101,8 +105,8 @@ void addrecord(User& currentUser, const std::vector<Record>& myRecord) {
 					continue;
 				}
 				else if (inputval == 0) {
-					std::cout << "\nThe amount must be greater than 0!\n";
-					continue;
+					std::cout << "\nAdded Cancelled.\n";
+					break;
 				}
 				else {
 					validSavings = inputval;
@@ -127,7 +131,7 @@ void addrecord(User& currentUser, const std::vector<Record>& myRecord) {
 				return;
 			}
 			while (true) {
-				double inputval = doubleinputfilter("Enter the amount of the expense: ");
+				double inputval = doubleinputfilter("Enter the amount of the expense (Enter 0 to cancel): ");
 
 				if (inputval == -1) {
 					std::cout << "\nInvalid input! Do not include alphabet!\n";
@@ -138,8 +142,8 @@ void addrecord(User& currentUser, const std::vector<Record>& myRecord) {
 					continue;
 				}
 				else if (inputval == 0) {
-					std::cout << "\nThe amount must be greater than 0!\n";
-					continue;
+					std::cout << "\Added Cancelled\n";
+					break;
 				}
 				else {
 					validExpense = inputval;
@@ -200,14 +204,22 @@ void updaterecord(User& currentUser, std::vector<Record>& myRecord) {
 		return;
 	}
 	std::cout << "\n--------------------------\n1. Update Savings\n2. Update Expenses\n--------------------------\n";
-	int choice = integerinputfilter("Enter your choice: ");
+	int choice = integerinputfilter("Enter your choice (Enter 0 to cancel): ");
+	if (choice == 0) {
+		std::cout << "\nUpdate Cancelled.\n";
+		return;
+	}
 	if (choice == 1) {
 		std::cout << "\n--------------------------------------";
 		std::cout << "\nCurrent Name: " << currentUser.myRecord[foundindex].nameS;
 		std::cout << "\nCurrent Savings: " << currentUser.myRecord[foundindex].savings;
 		std::cout << "\n--------------------------------------\n";
 
-		currentUser.myRecord[foundindex].nameS = stringinputfilter("Enter new name: ");
+		currentUser.myRecord[foundindex].nameS = stringinputfilter("Enter new name (Enter 0 to cancel): ");
+		if (currentUser.myRecord[foundindex].nameS == "0") {
+			std::cout << "\nUpdate Cancelled.\n";
+			return;
+		}
 
 		double validSavings = 0.0;
 		while (true) {
@@ -222,8 +234,8 @@ void updaterecord(User& currentUser, std::vector<Record>& myRecord) {
 				continue;
 			}
 			else if (inputval == 0) {
-				std::cout << "\nThe amount must be greater than 0!\n";
-				continue;
+				std::cout << "\nUpdate Cancelled\n";
+				break;
 			}
 			else {
 				validSavings = inputval;
@@ -257,8 +269,8 @@ void updaterecord(User& currentUser, std::vector<Record>& myRecord) {
 				continue;
 			}
 			else if (inputval == 0) {
-				std::cout << "\nThe amount must be greater than 0!\n";
-				continue;
+				std::cout << "\nUpdate Cancelled\n";
+				break;
 			}
 			else {
 				validExpense = inputval;

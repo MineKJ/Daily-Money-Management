@@ -37,8 +37,12 @@ void registerUser() {
 	}
 
 	//password
-	newuser.password = stringinputfilter("Create Password: ");
+	newuser.password = stringinputfilter("Create Password (Enter 0 to cancel): ");
 	registration = true;
+	if (newuser.username == "0") {
+		std::cout << "\nRegistration cancel.";
+		return;
+	}
 
 	if (registration) {
 		std::ofstream outfile("user.txt", std::ios::app);
@@ -61,7 +65,11 @@ int loginUser(User& currentUser) {
 		return 2;
 	}
 
-	inputPass = stringinputfilter("Enter password: ");
+	inputPass = stringinputfilter("Enter password (Enter 0 to cancel): ");
+
+	if (inputPass == "0") {
+		return 2;
+	}
 	std::ifstream inFile("user.txt");
 	std::string fileUser, filePass;
 
