@@ -338,7 +338,7 @@ void displayrecord(User& currentUser, const std::vector<Record>& myRecord) {
 		<< "\n- ------------------------------ -"
 		<< "\n| Total Savings   : RM " << std::setw(8) << totalSavings << "  |"
 		<< "\n| Total Expenses  : RM " << std::setw(8) << totalExpenses << "  |"
-		<< "\n| Current Balance : RM " << std::setw(8) << totalbalance << "  |"
+		<< "\n| Current Balance : RM " << std::setw(8) << totalbalance << "  |
 		<< "\n- ------------------------------ -\n";
 	clearscreen();
 }
