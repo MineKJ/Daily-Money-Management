@@ -6,35 +6,40 @@
 #include "models.h"
 
 void saveUserRecord(const User& currentUser ) {
-	std::vector<std::string> otherUser;
+	std::vector<std::string>updatedlines;
 	std::ifstream inFile("user_record.txt");
 	std::string line;
 
 	while (std::getline(inFile, line)) {
-		if (line.find(currentUser.username + ",") != 0) { //0 here is like the position of the currentUser u just logged in, this line will skip if is currentuser
-			otherUser.push_back(line); //else push back the line into vector otheruser
+		if (line.empty()) {
+			continue;
 		}
+		//check whether this line is belongs to currentuser
+		if (line.find(currentUser.username + ",") == 0) {
+			for (const auto& r : currentUser.myRecord) {
+				std::string user_date = currentUser.username + "," + r.date + ",";
+
+				if (line.find(user_date) == 0) {
+					line = user_date + r.nameS + "," + r.nameE + "," + std::to_string(r.savings) + "," + std::to_string(r.expenses);
+					break;
+				}
+			}
+		}
+		updatedlines.push_back(line);
 	}
 	inFile.close();
 
 	std::ofstream outfile("user_record.txt");
-
-	//automatically save the other user to otherUser if the above command line.find is not equal to zero
-	for (const auto& U : otherUser) {
-		outfile << U << '\n';
-	}
-
-	for (const auto& r : currentUser.myRecord) {
-		outfile << currentUser.username << "," << r.date << "," << r.nameS << " " << r.nameE << "," << r.savings << "," << r.expenses << '\n';
+	for (const auto& l : updatedlines) {
+		outfile << l << '\n';
 	}
 	outfile.close();
 }
 
 void readUserRecord(User& currentUser) {
+	currentUser.myRecord.clear();
 	std::ifstream inFile("user_record.txt");
 	std::string line;
-
-	currentUser.myRecord.clear();
 
 	while (std::getline(inFile, line)) {
 		std::stringstream ss(line);
@@ -42,10 +47,10 @@ void readUserRecord(User& currentUser) {
 
 		if (std::getline(ss, username, ',') &&
 			std::getline(ss, date, ',')&&
-			std::getline(ss, nameS, ' ')&&
+			std::getline(ss, nameS, ',')&&
 			std::getline(ss, nameE, ',') &&
 			std::getline(ss, savingsStr, ',')&&
-			std::getline(ss, expensesStr)) {
+			std::getline(ss, expensesStr, ',')) {
 
 			if (username == currentUser.username) {
 				Record r;
