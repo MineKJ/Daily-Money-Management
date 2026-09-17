@@ -37,7 +37,6 @@ void saveUserRecord(const User& currentUser ) {
 }
 
 void readUserRecord(User& currentUser) {
-	currentUser.myRecord.clear();
 	std::ifstream inFile("user_record.txt");
 	std::string line;
 

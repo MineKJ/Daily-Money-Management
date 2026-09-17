@@ -44,7 +44,6 @@ void managemenu(User& currentUser, std::vector<Record>& myRecord) {
 		}
 		else if (choice == 3) {
 			displayrecord(currentUser, myRecord); //display all record
-			clearscreen();
 			continue;
 		}
 		else if (choice == 0) { //exit
@@ -340,5 +339,6 @@ void displayrecord(User& currentUser, const std::vector<Record>& myRecord) {
 		<< "\n| Total Savings   : RM " << std::setw(8) << totalSavings << "  |"
 		<< "\n| Total Expenses  : RM " << std::setw(8) << totalExpenses << "  |"
 		<< "\n| Current Balance : RM " << std::setw(8) << totalbalance << "  |"
-		<< "\n- ------------------------------ -";
+		<< "\n- ------------------------------ -\n";
+	clearscreen();
 }
