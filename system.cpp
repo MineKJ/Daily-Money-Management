@@ -44,7 +44,6 @@ void managemenu(User& currentUser, std::vector<Record>& myRecord) {
 		}
 		else if (choice == 3) {
 			displayrecord(currentUser, myRecord); //display all record
-			clearscreen();
 			continue;
 		}
 		else if (choice == 0) { //exit
