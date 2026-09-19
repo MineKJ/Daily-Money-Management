@@ -48,15 +48,15 @@ double doubleinputfilter(const std::string& prompt) {
 		if (input.empty()) {
 			return -2;
 		}
+		if (input < "0"){
+			return -3;
+		}
 		//extract the input to integer and ensure there is no extra text/alphabet behind number
 		std::stringstream ss(input);
 		double val;
 		char extra;
 
 		if (ss >> val && !(ss >> extra)) {
-			if (val <= 0.0) {
-				std::cout << "\nExpenses must be greater than 0! Please try again.\n";
-			}
 			return val;
 		}
 		else {
@@ -99,8 +99,8 @@ std::string formatdate(const std::string& prompt) {
 	while (true) {
 		std::cout << prompt;
 		std::getline(std::cin, input);
-		if (input == "0") {
-			return "0";
+		if (input == "99") {
+			return "99";
 		}
 
 		if (input.empty()) {

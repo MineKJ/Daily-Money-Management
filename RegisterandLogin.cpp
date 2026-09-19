@@ -12,16 +12,17 @@ void registerUser() {
 	
 	while (true){
 		bool checkname = false;
-		newuser.username = stringinputfilter("Create a account username (Enter 0 to cancel register): ");
-		if (newuser.username == "0") {
+		newuser.username = stringinputfilter("Create a account username (Enter 99 to cancel register): ");
+		if (newuser.username == "99") {
 			std::cout << "\nRegistration cancel.";
+			clearscreen();
 			return;
 		}
 
 		std::ifstream inFile("user.txt");
 		std::string fileUser, filePass;
 		while (inFile >> fileUser >> filePass) {
-			std::cout << "\nComparing " << newuser.username << " with " << fileUser << '\n';
+			std::cout << "\nCheckName: Comparing " << newuser.username << " with " << fileUser;
 			if (newuser.username == fileUser) {
 				checkname = true;
 				break;
@@ -37,10 +38,11 @@ void registerUser() {
 	}
 
 	//password
-	newuser.password = stringinputfilter("Create Password (Enter 0 to cancel): ");
+	newuser.password = stringinputfilter("Create Password (Enter 99 to cancel): ");
 	registration = true;
-	if (newuser.username == "0") {
+	if (newuser.password == "99") {
 		std::cout << "\nRegistration cancel.";
+		clearscreen();
 		return;
 	}
 
@@ -59,17 +61,18 @@ void registerUser() {
 
 int loginUser(User& currentUser) {
 	std::string inputUser, inputPass;
-	inputUser = stringinputfilter("Enter your username (Enter 0 to cancel login): ");
+	inputUser = stringinputfilter("Enter your username (Enter 99 to cancel login): ");
 
-	if (inputUser == "0") {
+	if (inputUser == "99") {
 		return 2;
 	}
 
-	inputPass = stringinputfilter("Enter password (Enter 0 to cancel): ");
+	inputPass = stringinputfilter("Enter password (Enter 99 to cancel): ");
 
-	if (inputPass == "0") {
+	if (inputPass == "99") {
 		return 2;
 	}
+
 	std::ifstream inFile("user.txt");
 	std::string fileUser, filePass;
 

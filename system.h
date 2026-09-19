@@ -5,8 +5,9 @@
 #include "models.h"
 
 void managemenu(User& currentUser, std::vector<Record>& myRecord);
-void addrecord(User& currentUser, const std::vector<Record>& myRecord);
+void addrecord(User& currentUser, std::vector<Record>& myRecord);
 void updaterecord(User& currentUser, std::vector<Record>& myRecord);
 void displayrecord(User& currentUser, const std::vector<Record>& myRecord);
+void deleterecord(User& currentUser, std::vector<Record>& myRecord);
 
 #endif

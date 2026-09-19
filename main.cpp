@@ -33,15 +33,15 @@ int main() {
 			break;
 		case 2:
 			status = loginUser(currentUser);
-			if (status == 0) {
-				std::cout << "\nLogin successfully! Directing to management page...\n";
-				clearscreen();
-				managemenu(currentUser, myRecord);
-			}
-			else if (status == 2) {
+			if (status == 2) {
 				std::cout << "\nLogin Cancelled.";
 				clearscreen();
 				break;
+			}
+			else if (status == 0) {
+				std::cout << "\nLogin successfully! Directing to management page...\n";
+				clearscreen();
+				managemenu(currentUser, myRecord);
 			}
 			else {
 				std::cout << "\nLogin failed! Please try again!\n";

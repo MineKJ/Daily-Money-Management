@@ -17,7 +17,7 @@ void managemenu(User& currentUser, std::vector<Record>& myRecord) {
 		std::cout << "=========================================\n";
 		std::cout << "     Daily Money Management System\n";
 		std::cout << "=========================================\n";
-		std::cout << "1. Add Record\n2. Update Record\n3. Display Record\n0. Exit\n--------------------------\n";
+		std::cout << "1. Add Record\n2. Update Record\n3. Display Record\n4. Delete Record\n0. Exit\n--------------------------\n";
 		for (const auto& r : currentUser.myRecord) {
 			totalsavings += r.savings;
 			totalexpenses += r.expenses;
@@ -27,7 +27,7 @@ void managemenu(User& currentUser, std::vector<Record>& myRecord) {
 		int choice = integerinputfilter("Enter your choice: ");
 
 		if (choice == -1) {
-			std::cout << "\nInvalid input! Do not include alphabet!\n";
+			std::cout << "\nInvalid input! Do not include alphabet or symbols!\n";
 			continue;
 		}
 		if (choice == -2) {
@@ -46,13 +46,17 @@ void managemenu(User& currentUser, std::vector<Record>& myRecord) {
 			displayrecord(currentUser, myRecord); //display all record
 			continue;
 		}
+		else if (choice == 4) {
+			deleterecord(currentUser, myRecord); //delete record
+			continue;
+		}
 		else if (choice == 0) { //exit
 			loggedin = false;
 			clearscreen();
 			break;
 		}
 		else {
-			std::cout << "\nInvalid option. Please type (0-3) only!\n";
+			std::cout << "\nInvalid option. Please type (0-4) only!\n";
 			clearscreen();
 			continue;
 		}
@@ -62,9 +66,9 @@ void managemenu(User& currentUser, std::vector<Record>& myRecord) {
 void addrecord(User& currentUser, std::vector<Record>& myRecord) {
 	int choice;
 	std::string nameS, nameE;
-	std::string date = formatdate("Enter the date |DDMMYYYY| (Enter 0 to cancel): "); //the function is used to change the date to DDMMYYYY format
+	std::string date = formatdate("Enter the date [DDMMYYYY] (Enter 99 to cancel): "); //the function is used to change the date to DDMMYYYY format
 
-	if (date == "0") {
+	if (date == "99") {
 		std::cout << "\nAdd record cancelled.\n";
 		clearscreen();
 		return;
@@ -88,40 +92,44 @@ void addrecord(User& currentUser, std::vector<Record>& myRecord) {
 
 	std::cout << "\n--------------------------\n1. Add Savings\n2. Add Expenses\n--------------------------\n";
 	while (true) {
-		choice = integerinputfilter("Choose an option (Enter 0 to cancel): ");
+		choice = integerinputfilter("Choose an option (Enter 99 to cancel): ");
 		if (choice == -1) {
-			std::cout << "\nInvalid input! Do not include alphabet!\n";
+			std::cout << "\nInvalid input! Do not include alphabet or symbols!\n";
 			continue;
 		}
 		if (choice == -2) {
 			std::cout << "\nInput cannot be empty!\n";
 			continue;
 		}
-		if (choice == 0) {
+		if (choice == 99) {
 			std::cout << "\nAdd record cancelled.\n";
 			clearscreen();
 			return;
 		}
 		if (choice == 1) {
-			nameS = stringinputfilter("Enter the name of the savings (Enter 0 to cancel): ");
-			if (nameS == "0") {
+			nameS = stringinputfilter("Enter the name of the savings (Enter 99 to cancel): ");
+			if (nameS == "99") {
 				std::cout << "\nAdded Cancelled.\n";
 				clearscreen();
 				return;
 			}
 			double validSavings = 0.0;
 			while (true) {
-				double inputval = doubleinputfilter("Enter the amount of the savings (Enter 0 to cancel): ");
+				double inputval = doubleinputfilter("Enter the amount of the savings (Enter 99 to cancel): ");
 
 				if (inputval == -1) {
-					std::cout << "\nInvalid input! Do not include alphabet!\n";
+					std::cout << "\nInvalid input! Do not include alphabet or symbols!\n";
 					continue;
 				}
 				else if (inputval == -2) {
 					std::cout << "\nInput cannot be empty!\n";
 					continue;
 				}
-				else if (inputval == 0) {
+				else if (inputval == -3) {
+					std::cout << "\nInput cannot include negative.\n";
+					continue;
+				}
+				else if (inputval == 99) {
 					std::cout << "\nAdded Cancelled.\n";
 					clearscreen();
 					break;
@@ -141,24 +149,24 @@ void addrecord(User& currentUser, std::vector<Record>& myRecord) {
 		else if (choice == 2) {
 			//add new record here
 			double validExpense = 0.0;
-			nameE = stringinputfilter("Enter the name of the expense (Enter 0 to cancel): ");
-			if (nameE == "0") {
+			nameE = stringinputfilter("Enter the name of the expense (Enter 99 to cancel): ");
+			if (nameE == "99") {
 				std::cout << "\nAdded Cancelled.\n";
 				clearscreen();
 				return;
 			}
 			while (true) {
-				double inputval = doubleinputfilter("Enter the amount of the expense (Enter 0 to cancel): ");
+				double inputval = doubleinputfilter("Enter the amount of the expense (Enter 99 to cancel): ");
 
 				if (inputval == -1) {
-					std::cout << "\nInvalid input! Do not include alphabet!\n";
+					std::cout << "\nInvalid input! Do not include alphabet or symbols!\n";
 					continue;
 				}
 				else if (inputval == -2) {
 					std::cout << "\nInput cannot be empty!\n";
 					continue;
 				}
-				else if (inputval == 0) {
+				else if (inputval == 99) {
 					std::cout << "\nAdded Cancelled\n";
 					clearscreen();
 					break;
@@ -188,11 +196,12 @@ void updaterecord(User& currentUser, std::vector<Record>& myRecord) {
 	std::string nameS, nameE;
 	if (currentUser.myRecord.empty()) {
 		std::cout << "\nNo record found.\n";
+		clearscreen();
 		return;
 	}
-	std::string finddate = formatdate("Enter the date to update DDMMYYYY (Enter 0 to cancel): ");
+	std::string finddate = formatdate("Enter the date to update [DDMMYYYY] (Enter 99 to cancel): ");
 
-	if (finddate == "0") {
+	if (finddate == "99") {
 		std::cout << "\nUpdate cancelled.\n";
 		clearscreen();
 		return;
@@ -206,8 +215,8 @@ void updaterecord(User& currentUser, std::vector<Record>& myRecord) {
 	}
 
 	std::cout << "\n--------------------------\n1. Update Savings\n2. Update Expenses\n--------------------------\n";
-	int choice = integerinputfilter("Enter your choice (Enter 0 to cancel): ");
-	if (choice == 0) {
+	int choice = integerinputfilter("Enter your choice (Enter 99 to cancel): ");
+	if (choice == 99) {
 		std::cout << "\nUpdate Cancelled.\n";
 		clearscreen();
 		return;
@@ -218,8 +227,8 @@ void updaterecord(User& currentUser, std::vector<Record>& myRecord) {
 		std::cout << "\nCurrent Savings: " << currentUser.myRecord[foundindex].savings;
 		std::cout << "\n--------------------------------------\n";
 
-		nameS = stringinputfilter("Enter new name (Enter 0 to cancel): ");
-		if (nameS == "0") {
+		nameS = stringinputfilter("Enter new name (Enter 99 to cancel): ");
+		if (nameS == "99") {
 			std::cout << "\nUpdate Cancelled.\n";
 			clearscreen();
 			return;
@@ -227,17 +236,17 @@ void updaterecord(User& currentUser, std::vector<Record>& myRecord) {
 
 		double validSavings = 0.0;
 		while (true) {
-			double inputval = doubleinputfilter("Enter new savings (Enter 0 to cancel): ");
+			double inputval = doubleinputfilter("Enter new savings (Enter 99 to cancel): ");
 
 			if (inputval == -1) {
-				std::cout << "\nInvalid input! Do not include alphabet!\n";
+				std::cout << "\nInvalid input! Do not include alphabet or symbols!\n";
 				continue;
 			}
 			else if (inputval == -2) {
 				std::cout << "\nInput cannot be empty!\n";
 				continue;
 			}
-			else if (inputval == 0) {
+			else if (inputval == 99) {
 				std::cout << "\nUpdate Cancelled\n";
 				clearscreen();
 				break;
@@ -260,8 +269,8 @@ void updaterecord(User& currentUser, std::vector<Record>& myRecord) {
 		std::cout << "\nCurrent Balance: " << currentUser.myRecord[foundindex].expenses;
 		std::cout << "\n--------------------------------------\n";
 
-		nameE = stringinputfilter("Enter new name (Enter 0 to cancel): ");
-		if (nameE == "0") {
+		nameE = stringinputfilter("Enter new name (Enter 99 to cancel): ");
+		if (nameE == "99") {
 			std::cout << "\nUpdate cancelled.\n";
 			clearscreen();
 			return;
@@ -269,17 +278,21 @@ void updaterecord(User& currentUser, std::vector<Record>& myRecord) {
 
 		double validExpense = 0.0;
 		while (true) {
-			double inputval = doubleinputfilter("Enter new expense (Enter 0 to cancel): ");
+			double inputval = doubleinputfilter("Enter new expense (Enter 99 to cancel): ");
 
 			if (inputval == -1) {
-				std::cout << "\nInvalid input! Do not include alphabet!\n";
+				std::cout << "\nInvalid input! Do not include alphabet or symbols!\n";
 				continue;
 			}
 			else if (inputval == -2) {
 				std::cout << "\nInput cannot be empty!\n";
 				continue;
 			}
-			else if (inputval == 0) {
+			else if (inputval == -3) {
+				std::cout << "\nInput cannot include negative.\n";
+				continue;
+			}
+			else if (inputval == 99) {
 				std::cout << "\nUpdate Cancelled\n";
 				clearscreen();
 				break;
@@ -338,7 +351,62 @@ void displayrecord(User& currentUser, const std::vector<Record>& myRecord) {
 		<< "\n- ------------------------------ -"
 		<< "\n| Total Savings   : RM " << std::setw(8) << totalSavings << "  |"
 		<< "\n| Total Expenses  : RM " << std::setw(8) << totalExpenses << "  |"
-		<< "\n| Current Balance : RM " << std::setw(8) << totalbalance << "  |
+		<< "\n| Current Balance : RM " << std::setw(8) << totalbalance << "  |"
 		<< "\n- ------------------------------ -\n";
 	clearscreen();
+}
+
+void deleterecord(User& currentUser, std::vector<Record>& myRecord) {
+	std::string deletedate;
+	if (currentUser.myRecord.empty()) {
+		std::cout << "\nNo record found.\n";
+		clearscreen();
+		return;
+	}
+	std::cout
+		<< "\n- ---------- - -------------------- - -------------------- - ---------- - ---------- -"
+		<< "\n|    Date    |     Savings'Name     |     Expenses'Name    |   Savings  |  Expenses  |"
+		<< "\n- ---------- - -------------------- - -------------------- - ---------- - ---------- -\n";
+	for (const auto& r : currentUser.myRecord) {	
+	std::cout << std::left << std::fixed << std::setprecision(2)
+		<< "| " << std::setw(11) << r.date
+		<< "| " << std::setw(21) << r.nameS
+		<< "| " << std::setw(21) << r.nameE
+		<< "| " << std::setw(11) << r.savings
+		<< "| " << std::setw(11) << r.expenses
+		<< "|" << std::endl;
+	}
+	std::cout << "- ---------- - -------------------- - -------------------- - ---------- - ---------- -\n";
+
+	deletedate = formatdate("Enter date to delete [DDMMYYYY] (Enter 99 to cancel):");
+	if (deletedate == "-1") {
+		std::cout << "\nInvalid input! Do not include alphabet or symbols!\n";
+		return;
+	}
+	else if (deletedate == "-2") {
+		std::cout << "\nInput cannot be empty!\n";
+		return;
+	}
+	else if (deletedate == "99") {
+		std::cout << "\nDelete Cancelled.\n";
+		clearscreen();
+		return;
+	}
+	bool founddate = false;
+	for (auto i = currentUser.myRecord.begin(); i != currentUser.myRecord.end(); ++i) {
+		if (i->date == deletedate) {
+			currentUser.myRecord.erase(i);
+			founddate = true;
+			break;
+		}
+	}
+	saveUserRecord(currentUser);
+	std::cout << "\nSuccessfully deleted!\n";
+	clearscreen();
+
+	if (!founddate) {
+		std::cout << "\nDate " << deletedate << " is not found in record.\n";
+		clearscreen();
+		return;
+	}
 }
