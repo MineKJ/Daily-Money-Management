@@ -12,24 +12,25 @@ void saveUserRecord(User& currentUser) {
 
 	if (inFile.is_open()) {
 		while (std::getline(inFile, line)) {	//if the line is not empty and the record is not for currentuser, then store into a new line
-			if (!line.empty() && line.find(currentUser.username + ",") != 0) {
+			if (!line.empty()) continue;
+
+			if (line.find(currentUser.username + ",") != 0) {
 				updatedlines.push_back(line);
 			}
+			inFile.close();
 		}
-		inFile.close();
-	}
-	for (const auto& r:currentUser.myRecord) {
-		//if the record is belongs to this user, then store into line
-			line = currentUser.username + "," + r.date + "," + r.nameS + "," + r.nameE + "," + std::to_string(r.savings) + "," + std::to_string(r.expenses);
-			break;
+		for (const auto& r : currentUser.myRecord) {
+			//if the record is belongs to this user, then store into line
+			std::string recordline = currentUser.username + "," + r.date + "," + r.nameS + "," + r.nameE + "," + std::to_string(r.savings) + "," + std::to_string(r.expenses);
+			updatedlines.push_back(recordline); //push back the records to updated line then outfile
 		}
-	updatedlines.push_back(line); //push back the records to updated line then outfile
 
-	std::ofstream outfile("user_record.txt");
-	for (const auto& l : updatedlines) {
-		outfile << l << '\n';
+		std::ofstream outfile("user_record.txt");
+		for (const auto& l : updatedlines) {
+			outfile << l << '\n';
+		}
+		outfile.close();
 	}
-	outfile.close();
 }
 
 void readUserRecord(User& currentUser) {

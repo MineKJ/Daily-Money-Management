@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <iomanip>
+#include <algorithm>
 #include "system.h"
 #include "tools.h"
 #include "storage.h"
@@ -17,13 +18,13 @@ void managemenu(User& currentUser, std::vector<Record>& myRecord) {
 		std::cout << "=========================================\n";
 		std::cout << "     Daily Money Management System\n";
 		std::cout << "=========================================\n";
-		std::cout << "1. Add Record\n2. Update Record\n3. Display Record\n4. Delete Record\n0. Exit\n--------------------------\n";
+		std::cout << "1. Add Record\n2. Update Record\n3. Display Record\n4. Delete Record\n0. Exit\n----------------------------------------\n";
 		for (const auto& r : currentUser.myRecord) {
 			totalsavings += r.savings;
 			totalexpenses += r.expenses;
 		}
 		totalbalance = totalsavings - totalexpenses;
-		std::cout << "Current Balance: RM " << std::fixed << std::setprecision(2) << totalbalance << "\n--------------------------\n";
+		std::cout << "Current Balance: RM " << std::fixed << std::setprecision(2) << totalbalance << "\n----------------------------------------\n";
 		int choice = integerinputfilter("Enter your choice: ");
 
 		if (choice == -1) {
@@ -199,6 +200,35 @@ void updaterecord(User& currentUser, std::vector<Record>& myRecord) {
 		clearscreen();
 		return;
 	}
+	size_t index = currentUser.myRecord.size();
+	//sort record date with selection sort
+	for (size_t i = 0; i < index - 1; ++i) {
+		size_t minIndex = i;
+		for (size_t j = i + 1; j < index; ++j) {
+			if (currentUser.myRecord[j].date < currentUser.myRecord[minIndex].date) {
+				minIndex = j;
+			}
+		}
+		if (minIndex != i) {
+			std::swap(currentUser.myRecord[i], currentUser.myRecord[minIndex]);
+		}
+	}
+	std::cout
+		<< "\n- ---------- - -------------------- - -------------------- - ---------- - ---------- -"
+		<< "\n|    Date    |     Savings'Name     |     Expenses'Name    |   Savings  |  Expenses  |"
+		<< "\n- ---------- - -------------------- - -------------------- - ---------- - ---------- -\n";
+
+	for (const auto& r : currentUser.myRecord) {
+		std::cout << std::left << std::fixed << std::setprecision(2)
+			<< "| " << std::setw(11) << r.date
+			<< "| " << std::setw(21) << r.nameS
+			<< "| " << std::setw(21) << r.nameE
+			<< "| " << std::setw(11) << r.savings
+			<< "| " << std::setw(11) << r.expenses
+			<< "|" << std::endl;
+	}
+	std::cout << "- ---------- - -------------------- - -------------------- - ---------- - ---------- -\n\n";
+
 	std::string finddate = formatdate("Enter the date to update [DDMMYYYY] (Enter 99 to cancel): ");
 
 	if (finddate == "99") {
@@ -263,7 +293,7 @@ void updaterecord(User& currentUser, std::vector<Record>& myRecord) {
 		std::cout << "\nSuccessfully updated!\n";
 		clearscreen();
 	}
-	if (choice == 2) {
+	else if (choice == 2) {
 		std::cout << "\n--------------------------------------";
 		std::cout << "\nCurrent Name: " << currentUser.myRecord[foundindex].nameE;
 		std::cout << "\nCurrent Balance: " << currentUser.myRecord[foundindex].expenses;
@@ -323,6 +353,19 @@ void displayrecord(User& currentUser, const std::vector<Record>& myRecord) {
 		return;
 	}
 
+	size_t index = currentUser.myRecord.size();
+	//sort record date with selection sort
+	for (size_t i = 0; i < index - 1; ++i) {
+		size_t minIndex = i;
+		for (size_t j = i + 1; j < index; ++j) {
+			if (currentUser.myRecord[j].date < currentUser.myRecord[minIndex].date) {
+				minIndex = j;
+			}
+		}
+		if (minIndex != i) {
+			std::swap(currentUser.myRecord[i], currentUser.myRecord[minIndex]);
+		}
+	}
 	std::cout
 		<< "\n- ---------- - -------------------- - -------------------- - ---------- - ---------- -"
 		<< "\n|    Date    |     Savings'Name     |     Expenses'Name    |   Savings  |  Expenses  |"
@@ -363,6 +406,19 @@ void deleterecord(User& currentUser, std::vector<Record>& myRecord) {
 		clearscreen();
 		return;
 	}
+	size_t index = currentUser.myRecord.size();
+	//sort record date with selection sort
+	for (size_t i = 0; i < index - 1; ++i) {
+		size_t minIndex = i;
+		for (size_t j = i + 1; j < index; ++j) {
+			if (currentUser.myRecord[j].date < currentUser.myRecord[minIndex].date) {
+				minIndex = j;
+			}
+		}
+		if (minIndex != i) {
+			std::swap(currentUser.myRecord[i], currentUser.myRecord[minIndex]);
+		}
+	}
 	std::cout
 		<< "\n- ---------- - -------------------- - -------------------- - ---------- - ---------- -"
 		<< "\n|    Date    |     Savings'Name     |     Expenses'Name    |   Savings  |  Expenses  |"
@@ -376,7 +432,7 @@ void deleterecord(User& currentUser, std::vector<Record>& myRecord) {
 		<< "| " << std::setw(11) << r.expenses
 		<< "|" << std::endl;
 	}
-	std::cout << "- ---------- - -------------------- - -------------------- - ---------- - ---------- -\n";
+	std::cout << "- ---------- - -------------------- - -------------------- - ---------- - ---------- -\n\n";
 
 	deletedate = formatdate("Enter date to delete [DDMMYYYY] (Enter 99 to cancel):");
 	if (deletedate == "-1") {
