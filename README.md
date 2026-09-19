@@ -9,7 +9,7 @@ A simple console based system to record your savings and expenses. This system i
 
 -`Display Record`
 
--`Delete Record` (Coming Soon)
+-`Delete Record`
 
 -`Search Record` (Coming soon)
 
