@@ -133,7 +133,7 @@ void addrecord(User& currentUser, std::vector<Record>& myRecord) {
 				else if (inputval == 99) {
 					std::cout << "\nAdded Cancelled.\n";
 					clearscreen();
-					break;
+					return;
 				}
 				else {
 					validSavings = inputval;
@@ -170,7 +170,7 @@ void addrecord(User& currentUser, std::vector<Record>& myRecord) {
 				else if (inputval == 99) {
 					std::cout << "\nAdded Cancelled\n";
 					clearscreen();
-					break;
+					return;
 				}
 				else {
 					validExpense = inputval;
@@ -279,7 +279,7 @@ void updaterecord(User& currentUser, std::vector<Record>& myRecord) {
 			else if (inputval == 99) {
 				std::cout << "\nUpdate Cancelled\n";
 				clearscreen();
-				break;
+				return;
 			}
 			else {
 				validSavings = inputval;
@@ -325,7 +325,7 @@ void updaterecord(User& currentUser, std::vector<Record>& myRecord) {
 			else if (inputval == 99) {
 				std::cout << "\nUpdate Cancelled\n";
 				clearscreen();
-				break;
+				return;
 			}
 			else {
 				validExpense = inputval;
