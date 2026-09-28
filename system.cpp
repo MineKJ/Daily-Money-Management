@@ -25,7 +25,7 @@ void managemenu(User& currentUser, std::vector<Record>& myRecord) {
 		}
 		totalbalance = totalsavings - totalexpenses;
 		std::cout << "Current Balance: RM " << std::fixed << std::setprecision(2) << totalbalance << "\n----------------------------------------\n";
-		int choice = integerinputfilter("Enter your choice: ");
+		int choice = integerinputfilter("Enter your choice (0-4): ");
 
 		if (choice == -1) {
 			std::cout << "\nInvalid input! Do not include alphabet or symbols!\n";
@@ -93,7 +93,7 @@ void addrecord(User& currentUser, std::vector<Record>& myRecord) {
 
 	std::cout << "\n--------------------------\n1. Add Savings\n2. Add Expenses\n--------------------------\n";
 	while (true) {
-		choice = integerinputfilter("Choose an option (Enter 99 to cancel): ");
+		choice = integerinputfilter("Choose an option (1/2) (Enter 99 to cancel): ");
 		if (choice == -1) {
 			std::cout << "\nInvalid input! Do not include alphabet or symbols!\n";
 			continue;
@@ -245,7 +245,7 @@ void updaterecord(User& currentUser, std::vector<Record>& myRecord) {
 	}
 
 	std::cout << "\n--------------------------\n1. Update Savings\n2. Update Expenses\n--------------------------\n";
-	int choice = integerinputfilter("Enter your choice (Enter 99 to cancel): ");
+	int choice = integerinputfilter("Enter your choice (1/2) (Enter 99 to cancel): ");
 	if (choice == 99) {
 		std::cout << "\nUpdate Cancelled.\n";
 		clearscreen();
@@ -420,6 +420,7 @@ void deleterecord(User& currentUser, std::vector<Record>& myRecord) {
 		}
 	}
 	std::cout
+		<< "\nDate FOUND!\n"
 		<< "\n- ---------- - -------------------- - -------------------- - ---------- - ---------- -"
 		<< "\n|    Date    |     Savings'Name     |     Expenses'Name    |   Savings  |  Expenses  |"
 		<< "\n- ---------- - -------------------- - -------------------- - ---------- - ---------- -\n";

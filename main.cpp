@@ -17,7 +17,7 @@ int main() {
 		//Login menu
 		std::cout << "\nWelcome to Daily Money Management System!\nPlease Register or Log In an account to access the system\n";
 		std::cout << '\n' << std::string(30, '-') << "\n1.Register\n2.Log In\n0.Exit Program\n" << std::string(30, '-') << std::endl;   //std::string here is used for layout
-		choice = integerinputfilter("Enter your choice: ");
+		choice = integerinputfilter("Enter your choice (0-5): ");
 
 		if (choice == -1) {
 			std::cout << "\nInvalid input! Do not include alphabet!";

@@ -22,7 +22,6 @@ void registerUser() {
 		std::ifstream inFile("user.txt");
 		std::string fileUser, filePass;
 		while (inFile >> fileUser >> filePass) {
-			std::cout << "\nCheckName: Comparing " << newuser.username << " with " << fileUser;
 			if (newuser.username == fileUser) {
 				checkname = true;
 				break;
