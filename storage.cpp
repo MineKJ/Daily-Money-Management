@@ -26,7 +26,7 @@ void saveUserRecord(User& currentUser) {
 
 		for (const auto& r : currentUser.myRecord) {
 			//if the record is belongs to this user, then store into line
-			outfile << currentUser.username << "," << r.date << "," << r.nameS << "," << r.nameE << "," << std::to_string(r.savings) << "," + std::to_string(r.expenses) << '\n';
+			outfile << currentUser.username << "," << r.date << "," << r.nameS << "," << r.nameE << "," << std::to_string(r.savings) << "," << std::to_string(r.expenses) << '\n';
 		}
 		outfile.close();
 	}
