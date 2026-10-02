@@ -14,6 +14,21 @@ void saveUserRecord(const User& currentUser) {
 		if (line.find(currentUser.username + ",") != 0) {
 			otherUserData.push_back(line);
 		}
+<<<<<<< HEAD
+=======
+		inFile.close();
+
+		std::ofstream outfile("user_record.txt");
+		for (const auto& l : otherUserData) {
+			outfile << l << '\n';
+		}
+
+		for (const auto& r : currentUser.myRecord) {
+			//if the record is belongs to this user, then store into line
+			outfile << currentUser.username << "," << r.date << "," << r.nameS << "," << r.nameE << "," << std::to_string(r.savings) << "," << std::to_string(r.expenses) << '\n';
+		}
+		outfile.close();
+>>>>>>> d8b5038d866a5bdc987b00e2bf5fae6cc9e96d81
 	}
 	inFile.close();
 
