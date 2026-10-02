@@ -252,10 +252,11 @@ void updaterecord(User& currentUser, std::vector<Record>& myRecord) {
 		return;
 	}
 	if (choice == 1) {
-		std::cout << "\n--------------------------------------";
-		std::cout << "\nCurrent Name: " << currentUser.myRecord[foundindex].nameS;
-		std::cout << "\nCurrent Savings: " << currentUser.myRecord[foundindex].savings;
-		std::cout << "\n--------------------------------------\n";
+		std::cout 
+			<< "\n--------------------------------------"
+			<< "\nCurrent Name: " << currentUser.myRecord[foundindex].nameS
+			<< "\nCurrent Savings: " << currentUser.myRecord[foundindex].savings
+			<< "\n--------------------------------------\n";
 
 		nameS = stringinputfilter("Enter new name (Enter 99 to cancel): ");
 		if (nameS == "99") {
@@ -294,10 +295,11 @@ void updaterecord(User& currentUser, std::vector<Record>& myRecord) {
 		clearscreen();
 	}
 	else if (choice == 2) {
-		std::cout << "\n--------------------------------------";
-		std::cout << "\nCurrent Name: " << currentUser.myRecord[foundindex].nameE;
-		std::cout << "\nCurrent Balance: " << currentUser.myRecord[foundindex].expenses;
-		std::cout << "\n--------------------------------------\n";
+		std::cout 
+				<< "\n--------------------------------------"
+				<< "\nCurrent Name: " << currentUser.myRecord[foundindex].nameE
+				<< "\nCurrent Balance: " << currentUser.myRecord[foundindex].expenses
+				<< "\n--------------------------------------\n";
 
 		nameE = stringinputfilter("Enter new name (Enter 99 to cancel): ");
 		if (nameE == "99") {
@@ -346,57 +348,201 @@ void updaterecord(User& currentUser, std::vector<Record>& myRecord) {
 	}
 }
 
-void displayrecord(User& currentUser, const std::vector<Record>& myRecord) {
+void displayrecord(User& currentUser, std::vector<Record>& myRecord) {
 	if (currentUser.myRecord.empty()) {
 		std::cout << "\nNo record found.\n";
 		clearscreen();
 		return;
 	}
-
-	size_t index = currentUser.myRecord.size();
-	//sort record date with selection sort
-	for (size_t i = 0; i < index - 1; ++i) {
-		size_t minIndex = i;
-		for (size_t j = i + 1; j < index; ++j) {
-			if (currentUser.myRecord[j].date < currentUser.myRecord[minIndex].date) {
-				minIndex = j;
-			}
-		}
-		if (minIndex != i) {
-			std::swap(currentUser.myRecord[i], currentUser.myRecord[minIndex]);
-		}
-	}
-	std::cout
-		<< "\n- ---------- - -------------------- - -------------------- - ---------- - ---------- -"
-		<< "\n|    Date    |     Savings'Name     |     Expenses'Name    |   Savings  |  Expenses  |"
-		<< "\n- ---------- - -------------------- - -------------------- - ---------- - ---------- -\n";
-
-	for (const auto& r : currentUser.myRecord) {
-		std::cout << std::left << std::fixed << std::setprecision(2)
-			<< "| " << std::setw(11) << r.date
-			<< "| " << std::setw(21) << r.nameS
-			<< "| " << std::setw(21) << r.nameE
-			<< "| " << std::setw(11) << r.savings
-			<< "| " << std::setw(11) << r.expenses
-			<< "|" << std::endl;
-	}
-	std::cout << "- ---------- - -------------------- - -------------------- - ---------- - ---------- -\n";
-
 	double totalSavings = 0.0;
 	double totalExpenses = 0.0;
 	double totalbalance;
-	for (const auto& r : currentUser.myRecord) {
-		totalSavings += r.savings;
-		totalExpenses += r.expenses;
+	while (true) {
+		std::cout
+			<< "\n-------------------------------"
+			<< "\n| 1. Display Monthly Savings  |"
+			<< "\n| 2. Display All Savings      |"
+			<< "\n-------------------------------\n";
+		int option;
+		option = integerinputfilter("Enter option 1 or 2 (Enter 99 to cancel): ");
+		if (option == -1) {
+			std::cout << "\nInvalid input! Do not include alphabet or symbols!\n";
+			continue;
+		}
+		else if (option == -2) {
+			std::cout << "\nInput cannot be empty!\n";
+			continue;
+		}
+		else if (option == 99) {
+			std::cout << "\nDisplay Record Cancelled.\n";
+			clearscreen();
+			return;
+		}
+		else if (option == 1) {
+			int month;
+			const std::string monthName[] = {
+				"", "JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE",
+				"JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"
+			};
+
+			std::cout
+				<< std::setw(44) << "------------------------------------------\n"
+				<< std::setw(44) << "|          All Monthly Records           |\n"
+				<< std::setw(44) << "------------------------------------------\n"
+				<< std::setw(44) << "|    1. January     |     7. July        |\n"
+				<< std::setw(44) << "|    2. February    |     8. August      |\n"
+				<< std::setw(44) << "|    3. March       |     9. September   |\n"
+				<< std::setw(44) << "|    4. April       |    10. October     |\n"
+				<< std::setw(44) << "|    5. May         |    11. November    |\n"
+				<< std::setw(44) << "|    6. June        |    12. December    |\n"
+				<< std::setw(44) << "------------------------------------------\n";
+
+			month = integerinputfilter("Enter the number 1 to 12 to display monthly record (Enter 99 to cancel): ");
+			if (month == -1) {
+				std::cout << "\nInvalid input! Do not include alphabet or symbols!\n";
+				continue;
+			}
+			else if (month == -2) {
+				std::cout << "\nInput cannot be empty!\n";
+				continue;
+			}
+			else if (month == 99) {
+				std::cout << "\nDisplay Month Cancelled.\n";
+				clearscreen();
+				return;
+			}
+			else {
+				std::cout << "\nInvalid month. Please choose from 1 to 12 only.\n";
+				continue;
+			}
+			bool found = false;
+			size_t index = currentUser.myRecord.size();
+			//sort record date with selection sort
+			for (size_t i = 0; i < index - 1; ++i) {
+				size_t minIndex = i;
+				for (size_t j = i + 1; j < index; ++j) {
+					if (currentUser.myRecord[j].date < currentUser.myRecord[minIndex].date) {
+						minIndex = j;
+					}
+				if (minIndex != i) {
+					std::swap(currentUser.myRecord[i], currentUser.myRecord[minIndex]);
+				}
+			}
+		}
+				
+		for (const auto& r : currentUser.myRecord) {
+			std::string monthstr = r.date.substr(3, 2);
+			int recordmonth = std::stoi(monthstr);
+			if (recordmonth == month) {
+				if (!found) {
+					std::string titleMonth = monthName[month] + " MONTHLY RECORD";
+					std::cout //first display the header
+						<< "\n--------------------------------------------------------------------------------------"
+						<< "\n| "  << std::right <<  std::setw(53) << titleMonth << std::setw(31) << " |"
+						<< "\n- ---------- - -------------------- - -------------------- - ---------- - ---------- -"
+						<< "\n|    Date    |     Savings'Name     |     Expenses'Name    |   Savings  |  Expenses  |"
+						<< "\n- ---------- - -------------------- - -------------------- - ---------- - ---------- -\n";
+					found = true;
+				}
+				//then display all the record
+			std::cout << std::left << std::fixed << std::setprecision(2)
+				<< "| " << std::setw(11) << r.date
+				<< "| " << std::setw(21) << r.nameS
+				<< "| " << std::setw(21) << r.nameE
+				<< "| " << std::setw(11) << r.savings
+				<< "| " << std::setw(11) << r.expenses
+				<< "|" << std::endl;
+			totalSavings += r.savings;
+			totalExpenses += r.expenses;
+			}
+		}
+		//after looping all the records, then only print the rest of the line to avoid the menu being looped twice
+		if (found) {
+			std::cout << "- ---------- - -------------------- - -------------------- - ---------- - ---------- -\n";
+			totalbalance = totalSavings - totalExpenses;
+			std::cout
+				<< "\n- ------------------------------ -"
+				<< "\n| Total Savings   : RM " << std::setw(8) << totalSavings << "  |"
+				<< "\n| Total Expenses  : RM " << std::setw(8) << totalExpenses << "  |"
+				<< "\n| Current Balance : RM " << std::setw(8) << totalbalance << "  |"
+				<< "\n- ------------------------------ -\n";
+			clearscreen();
+		}
+		else {
+			std::cout << "\nNo records found on this month.\n";
+			clearscreen();
+			return;
+		}	
+	}				
+	else if (option == 2) {
+		std::string dayJ, monthJ, yearJ, dayMin, monthMin, yearMin;
+		size_t index = currentUser.myRecord.size();
+		//sort record date with selection sort
+		for (size_t i = 0; i < index - 1; ++i) {
+			size_t minIndex = i;
+			for (size_t j = i + 1; j < index; ++j) {
+				dayJ = currentUser.myRecord[j].date.substr(0, 2);		//first insert day, month and year into string j and minIndex
+				monthJ = currentUser.myRecord[j].date.substr(3, 2);
+				yearJ = currentUser.myRecord[j].date.substr(6, 4);
+				std::string sortDateJ = yearJ + monthJ + dayJ; //changing it from DDMMYYYY to YYYYMMDD to detect the ascending order of date
+
+				dayMin = currentUser.myRecord[minIndex].date.substr(0, 2);
+				monthMin = currentUser.myRecord[minIndex].date.substr(3, 2);
+				yearMin = currentUser.myRecord[minIndex].date.substr(6, 4);
+				std::string sortDateMin = yearMin + monthMin + dayMin;
+				if (sortDateJ < sortDateMin) {			//compare if dateJ is smaller than dateMin, then swap position
+					minIndex = j;
+				}
+			}
+			if (minIndex != i) {
+				std::swap(currentUser.myRecord[i], currentUser.myRecord[minIndex]);
+			}
+		}
+		//Remark: Why not using DDMMYYYY format?
+		/*Ans: Lets say we have two date 01032026 and 25092025. 01032025 is suppose to be smaller than 25092026. So if we use DDMMYYYY, it will first detect
+		 the DD which is 01 and 25, 25 is larger than 01, so it will swap position, then it will stop detecting the rest of the number, however, 
+		 by using YYYYMMDD format, the detection will be like year: 2025 compare 2026, month: 03 compare 09, day: 01 compare 25, so that it will successfully sort it properly.*/
+
+		std::cout
+			<< "\n--------------------------------------------------------------------------------------"
+			<< "\n|                                ALL MONTHLY RECORD                                  |"
+			<< "\n- ---------- - -------------------- - -------------------- - ---------- - ---------- -"
+			<< "\n|    Date    |     Savings'Name     |     Expenses'Name    |   Savings  |  Expenses  |"
+			<< "\n- ---------- - -------------------- - -------------------- - ---------- - ---------- -\n";
+
+		for (const auto& r : currentUser.myRecord) {
+			std::cout << std::left << std::fixed << std::setprecision(2)
+				<< "| " << std::setw(11) << r.date
+				<< "| " << std::setw(21) << r.nameS
+				<< "| " << std::setw(21) << r.nameE
+				<< "| " << std::setw(11) << r.savings
+				<< "| " << std::setw(11) << r.expenses
+				<< "|" << std::endl;
+		}
+		std::cout << "- ---------- - -------------------- - -------------------- - ---------- - ---------- -\n";
+
+		double totalSavings = 0.0;
+		double totalExpenses = 0.0;
+		double totalbalance;
+		for (const auto& r : currentUser.myRecord) {
+			totalSavings += r.savings;
+			totalExpenses += r.expenses;
+		}
+		totalbalance = totalSavings - totalExpenses;
+		std::cout
+			<< "\n- ------------------------------ -"
+			<< "\n| Total Savings   : RM " << std::setw(8) << totalSavings << "  |"
+			<< "\n| Total Expenses  : RM " << std::setw(8) << totalExpenses << "  |"
+			<< "\n| Current Balance : RM " << std::setw(8) << totalbalance << "  |"
+			<< "\n- ------------------------------ -\n";
+		clearscreen();
 	}
-	totalbalance = totalSavings - totalExpenses;
-	std::cout
-		<< "\n- ------------------------------ -"
-		<< "\n| Total Savings   : RM " << std::setw(8) << totalSavings << "  |"
-		<< "\n| Total Expenses  : RM " << std::setw(8) << totalExpenses << "  |"
-		<< "\n| Current Balance : RM " << std::setw(8) << totalbalance << "  |"
-		<< "\n- ------------------------------ -\n";
-	clearscreen();
+	else {
+		std::cout << "\nInvalid number. You can only type 1, 2 or 99.\n";
+		return;
+	}
+	break;
+	}
 }
 
 void deleterecord(User& currentUser, std::vector<Record>& myRecord) {
@@ -406,12 +552,22 @@ void deleterecord(User& currentUser, std::vector<Record>& myRecord) {
 		clearscreen();
 		return;
 	}
+	std::string dayJ, monthJ, yearJ, dayMin, monthMin, yearMin;
 	size_t index = currentUser.myRecord.size();
 	//sort record date with selection sort
 	for (size_t i = 0; i < index - 1; ++i) {
 		size_t minIndex = i;
 		for (size_t j = i + 1; j < index; ++j) {
-			if (currentUser.myRecord[j].date < currentUser.myRecord[minIndex].date) {
+			dayJ = currentUser.myRecord[j].date.substr(0, 2);		//first insert day, month and year into string j and minIndex
+			monthJ = currentUser.myRecord[j].date.substr(3, 2);
+			yearJ = currentUser.myRecord[j].date.substr(6, 4);
+			std::string sortDateJ = yearJ + monthJ + dayJ; //changing it from DDMMYYYY to YYYYMMDD to detect the ascending order of date
+
+			dayMin = currentUser.myRecord[minIndex].date.substr(0, 2);
+			monthMin = currentUser.myRecord[minIndex].date.substr(3, 2);
+			yearMin = currentUser.myRecord[minIndex].date.substr(6, 4);
+			std::string sortDateMin = yearMin + monthMin + dayMin;
+			if (sortDateJ < sortDateMin) {		//compare if dateJ is smaller than dateMin, then swap position
 				minIndex = j;
 			}
 		}
@@ -420,7 +576,6 @@ void deleterecord(User& currentUser, std::vector<Record>& myRecord) {
 		}
 	}
 	std::cout
-		<< "\nDate FOUND!\n"
 		<< "\n- ---------- - -------------------- - -------------------- - ---------- - ---------- -"
 		<< "\n|    Date    |     Savings'Name     |     Expenses'Name    |   Savings  |  Expenses  |"
 		<< "\n- ---------- - -------------------- - -------------------- - ---------- - ---------- -\n";

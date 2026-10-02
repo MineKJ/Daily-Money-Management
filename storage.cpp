@@ -5,31 +5,29 @@
 #include "system.h"
 #include "models.h"
 
-void saveUserRecord(User& currentUser) {
-	std::vector<std::string>updatedlines, otherUserData;
+void saveUserRecord(const User& currentUser) {
+	std::vector<std::string>otherUserData;
 	std::ifstream inFile("user_record.txt");
 	std::string line;
 
-
-	if (inFile.is_open()) {
-		while (std::getline(inFile, line)) {	//if the line is not for currentuser, then store into a new line
-			if (line.find(currentUser.username + ",") != 0) {
-				otherUserData.push_back(line);
-			}
+	while (std::getline(inFile, line)) {	//if the line is not for currentuser, then store into a new line
+		if (line.find(currentUser.username + ",") != 0) {
+			otherUserData.push_back(line);
 		}
-		inFile.close();
-
-		std::ofstream outfile("user_record.txt");
-		for (const auto& l : otherUserData) {
-			outfile << l << '\n';
-		}
-
-		for (const auto& r : currentUser.myRecord) {
-			//if the record is belongs to this user, then store into line
-			outfile << currentUser.username << "," << r.date << "," << r.nameS << "," << r.nameE << "," << std::to_string(r.savings) << "," + std::to_string(r.expenses) << '\n';
-		}
-		outfile.close();
 	}
+	inFile.close();
+
+	std::ofstream outfile("user_record.txt");
+	for (const auto& l : otherUserData) {
+		outfile << l << '\n';
+	}
+
+	for (const auto& r : currentUser.myRecord) {
+		//if the record is belongs to this user, then store into line
+		outfile << currentUser.username << "," << r.date << "," << r.nameS << "," << r.nameE << "," << std::to_string(r.savings) << "," << std::to_string(r.expenses) << '\n';
+	}
+	outfile.close();
+	
 }
 
 void readUserRecord(User& currentUser) {	//read file

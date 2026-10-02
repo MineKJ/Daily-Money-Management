@@ -3,7 +3,7 @@
 
 #include "models.h"
 
-void saveUserRecord(User& currentUser);
+void saveUserRecord(const User& currentUser);
 void readUserRecord(User& currentUser);
 
 #endif
