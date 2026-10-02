@@ -411,7 +411,7 @@ void displayrecord(User& currentUser, std::vector<Record>& myRecord) {
 				clearscreen();
 				return;
 			}
-			else {
+			else  if (month < 1 || month > 12) {
 				std::cout << "\nInvalid month. Please choose from 1 to 12 only.\n";
 				continue;
 			}
