@@ -687,4 +687,5 @@ void searchrecord(User& currentUser, std::vector<Record>& myRecord) {
 		clearscreen();
 		return;
 	}
+	
 }
