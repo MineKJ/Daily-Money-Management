@@ -18,14 +18,14 @@ void managemenu(User& currentUser, std::vector<Record>& myRecord) {
 		std::cout << "=========================================\n";
 		std::cout << "     Daily Money Management System\n";
 		std::cout << "=========================================\n";
-		std::cout << "1. Add Record\n2. Update Record\n3. Display Record\n4. Delete Record\n0. Exit\n----------------------------------------\n";
+		std::cout << "1. Add Record\n2. Update Record\n3. Display Record\n4. Delete Record\n5. Search Record\n0. Exit\n----------------------------------------\n";
 		for (const auto& r : currentUser.myRecord) {
 			totalsavings += r.savings;
 			totalexpenses += r.expenses;
 		}
 		totalbalance = totalsavings - totalexpenses;
 		std::cout << "Current Balance: RM " << std::fixed << std::setprecision(2) << totalbalance << "\n----------------------------------------\n";
-		int choice = integerinputfilter("Enter your choice (0-4): ");
+		int choice = integerinputfilter("Enter your choice (0-5): ");
 
 		if (choice == -1) {
 			std::cout << "\nInvalid input! Do not include alphabet or symbols!\n";
@@ -50,6 +50,9 @@ void managemenu(User& currentUser, std::vector<Record>& myRecord) {
 		else if (choice == 4) {
 			deleterecord(currentUser, myRecord); //delete record
 			continue;
+		}
+		else if (choice == 5) {
+			searchrecord(currentUser, myRecord); //search record
 		}
 		else if (choice == 0) { //exit
 			loggedin = false;
@@ -195,6 +198,7 @@ void addrecord(User& currentUser, std::vector<Record>& myRecord) {
 
 void updaterecord(User& currentUser, std::vector<Record>& myRecord) {
 	std::string nameS, nameE;
+	bool found = false;
 	if (currentUser.myRecord.empty()) {
 		std::cout << "\nNo record found.\n";
 		clearscreen();
@@ -230,119 +234,128 @@ void updaterecord(User& currentUser, std::vector<Record>& myRecord) {
 	std::cout << "- ---------- - -------------------- - -------------------- - ---------- - ---------- -\n\n";
 
 	std::string finddate = formatdate("Enter the date to update [DDMMYYYY] (Enter 99 to cancel): ");
-
 	if (finddate == "99") {
 		std::cout << "\nUpdate cancelled.\n";
 		clearscreen();
 		return;
 	}
-	int foundindex = -1;
-	for (size_t i = 0; i < currentUser.myRecord.size(); ++i) {
-		if (currentUser.myRecord[i].date == finddate) {
-			foundindex = static_cast<int>(i);
-			break;
+
+	for (const auto& r : currentUser.myRecord) {
+		if (finddate == r.date) {
+			if(!found){
+				int foundindex = -1;
+				for (size_t i = 0; i < currentUser.myRecord.size(); ++i) {
+					if (currentUser.myRecord[i].date == finddate) {
+						foundindex = static_cast<int>(i);
+						break;
+					}
+				}
+
+				std::cout << "\n--------------------------\n1. Update Savings\n2. Update Expenses\n--------------------------\n";
+				int choice = integerinputfilter("Enter your choice (1/2) (Enter 99 to cancel): ");
+				if (choice == 99) {
+					std::cout << "\nUpdate Cancelled.\n";
+					clearscreen();
+					return;
+				}
+				if (choice == 1) {
+					std::cout
+						<< "\n--------------------------------------"
+						<< "\nCurrent Name: " << currentUser.myRecord[foundindex].nameS
+						<< "\nCurrent Savings: " << currentUser.myRecord[foundindex].savings
+						<< "\n--------------------------------------\n";
+
+					nameS = stringinputfilter("Enter new name (Enter 99 to cancel): ");
+					if (nameS == "99") {
+						std::cout << "\nUpdate Cancelled.\n";
+						clearscreen();
+						return;
+					}
+
+					double validSavings = 0.0;
+					while (true) {
+						double inputval = doubleinputfilter("Enter new savings (Enter 99 to cancel): ");
+
+						if (inputval == -1) {
+							std::cout << "\nInvalid input! Do not include alphabet or symbols!\n";
+							continue;
+						}
+						else if (inputval == -2) {
+							std::cout << "\nInput cannot be empty!\n";
+							continue;
+						}
+						else if (inputval == 99) {
+							std::cout << "\nUpdate Cancelled\n";
+							clearscreen();
+							return;
+						}
+						else {
+							validSavings = inputval;
+							break;
+						}
+					}
+					currentUser.myRecord[foundindex].nameS = nameS;
+					currentUser.myRecord[foundindex].savings = validSavings;
+				}
+				else if (choice == 2) {
+					std::cout
+						<< "\n--------------------------------------"
+						<< "\nCurrent Name: " << currentUser.myRecord[foundindex].nameE
+						<< "\nCurrent Balance: " << currentUser.myRecord[foundindex].expenses
+						<< "\n--------------------------------------\n";
+
+					nameE = stringinputfilter("Enter new name (Enter 99 to cancel): ");
+					if (nameE == "99") {
+						std::cout << "\nUpdate cancelled.\n";
+						clearscreen();
+						return;
+					}
+
+					double validExpense = 0.0;
+					while (true) {
+						double inputval = doubleinputfilter("Enter new expense (Enter 99 to cancel): ");
+
+						if (inputval == -1) {
+							std::cout << "\nInvalid input! Do not include alphabet or symbols!\n";
+							continue;
+						}
+						else if (inputval == -2) {
+							std::cout << "\nInput cannot be empty!\n";
+							continue;
+						}
+						else if (inputval == -3) {
+							std::cout << "\nInput cannot include negative.\n";
+							continue;
+						}
+						else if (inputval == 99) {
+							std::cout << "\nUpdate Cancelled\n";
+							clearscreen();
+							return;
+						}
+						else {
+							validExpense = inputval;
+							break;
+						}
+					}
+					currentUser.myRecord[foundindex].nameE = nameE;
+					currentUser.myRecord[foundindex].expenses = validExpense;
+				}
+				else {
+					std::cout << "\nInvalid choice. Please try again!\n";
+					clearscreen();
+					return;
+				}
+			}
+			found = true;
 		}
 	}
-
-	std::cout << "\n--------------------------\n1. Update Savings\n2. Update Expenses\n--------------------------\n";
-	int choice = integerinputfilter("Enter your choice (1/2) (Enter 99 to cancel): ");
-	if (choice == 99) {
-		std::cout << "\nUpdate Cancelled.\n";
-		clearscreen();
-		return;
-	}
-	if (choice == 1) {
-		std::cout 
-			<< "\n--------------------------------------"
-			<< "\nCurrent Name: " << currentUser.myRecord[foundindex].nameS
-			<< "\nCurrent Savings: " << currentUser.myRecord[foundindex].savings
-			<< "\n--------------------------------------\n";
-
-		nameS = stringinputfilter("Enter new name (Enter 99 to cancel): ");
-		if (nameS == "99") {
-			std::cout << "\nUpdate Cancelled.\n";
-			clearscreen();
-			return;
-		}
-
-		double validSavings = 0.0;
-		while (true) {
-			double inputval = doubleinputfilter("Enter new savings (Enter 99 to cancel): ");
-
-			if (inputval == -1) {
-				std::cout << "\nInvalid input! Do not include alphabet or symbols!\n";
-				continue;
-			}
-			else if (inputval == -2) {
-				std::cout << "\nInput cannot be empty!\n";
-				continue;
-			}
-			else if (inputval == 99) {
-				std::cout << "\nUpdate Cancelled\n";
-				clearscreen();
-				return;
-			}
-			else {
-				validSavings = inputval;
-				break;
-			}
-		}
-		currentUser.myRecord[foundindex].nameS = nameS;
-		currentUser.myRecord[foundindex].savings = validSavings;
-
-		saveUserRecord(currentUser);
-		std::cout << "\nSuccessfully updated!\n";
-		clearscreen();
-	}
-	else if (choice == 2) {
-		std::cout 
-				<< "\n--------------------------------------"
-				<< "\nCurrent Name: " << currentUser.myRecord[foundindex].nameE
-				<< "\nCurrent Balance: " << currentUser.myRecord[foundindex].expenses
-				<< "\n--------------------------------------\n";
-
-		nameE = stringinputfilter("Enter new name (Enter 99 to cancel): ");
-		if (nameE == "99") {
-			std::cout << "\nUpdate cancelled.\n";
-			clearscreen();
-			return;
-		}
-
-		double validExpense = 0.0;
-		while (true) {
-			double inputval = doubleinputfilter("Enter new expense (Enter 99 to cancel): ");
-
-			if (inputval == -1) {
-				std::cout << "\nInvalid input! Do not include alphabet or symbols!\n";
-				continue;
-			}
-			else if (inputval == -2) {
-				std::cout << "\nInput cannot be empty!\n";
-				continue;
-			}
-			else if (inputval == -3) {
-				std::cout << "\nInput cannot include negative.\n";
-				continue;
-			}
-			else if (inputval == 99) {
-				std::cout << "\nUpdate Cancelled\n";
-				clearscreen();
-				return;
-			}
-			else {
-				validExpense = inputval;
-				break;
-			}
-		}
-		currentUser.myRecord[foundindex].nameE = nameE;
-		currentUser.myRecord[foundindex].expenses = validExpense;
-
+	if (found) {
 		saveUserRecord(currentUser);
 		std::cout << "\nSuccessfully updated!\n";
 		clearscreen();
 	}
 	else {
-		std::cout << "\nInvalid choice. Please try again!\n";
+		std::cout << "\nDate not found.\n";
 		clearscreen();
 		return;
 	}
@@ -411,7 +424,7 @@ void displayrecord(User& currentUser, std::vector<Record>& myRecord) {
 				clearscreen();
 				return;
 			}
-			else {
+			else if (month < 1 || month > 12) {
 				std::cout << "\nInvalid month. Please choose from 1 to 12 only.\n";
 				continue;
 			}
@@ -618,6 +631,59 @@ void deleterecord(User& currentUser, std::vector<Record>& myRecord) {
 
 	if (!founddate) {
 		std::cout << "\nDate " << deletedate << " is not found in record.\n";
+		clearscreen();
+		return;
+	}
+}
+
+void searchrecord(User& currentUser, std::vector<Record>& myRecord) {
+	bool founddate = false;
+	if (currentUser.myRecord.empty()) {
+		std::cout << "\nNo record found.\n";
+		clearscreen();
+		return;
+	}
+	
+	std::string date = formatdate("\nEnter the date [DDMMYYYY] to search (Enter 99 to cancel): ");
+	if (date == "-1") {
+		std::cout << "\nInvalid input! Do not include alphabet or symbols!\n";
+		return;
+	}
+	else if (date == "-2") {
+		std::cout << "\nInput cannot be empty!\n";
+		return;
+	}
+	else if (date == "99") {
+		std::cout << "\nSearch Cancelled.\n";
+		clearscreen();
+		return;
+	}
+	
+	for (const auto& r : currentUser.myRecord) {
+		if (date == r.date) {
+			if (!founddate) {	//this !founddate is to avoid printing the heading multiple times
+				std::cout << "\nDate FOUND!\n";
+				std::cout
+					<< "\n- ---------- - -------------------- - -------------------- - ---------- - ---------- -"
+					<< "\n|    Date    |     Savings'Name     |     Expenses'Name    |   Savings  |  Expenses  |"
+					<< "\n- ---------- - -------------------- - -------------------- - ---------- - ---------- -\n";
+			}
+			founddate = true;
+			std::cout << std::left << std::fixed << std::setprecision(2)
+				<< "| " << std::setw(11) << r.date
+				<< "| " << std::setw(21) << r.nameS
+				<< "| " << std::setw(21) << r.nameE
+				<< "| " << std::setw(11) << r.savings
+				<< "| " << std::setw(11) << r.expenses
+				<< "|" << std::endl;
+		}
+	}
+	if (founddate) {
+		std::cout << "- ---------- - -------------------- - -------------------- - ---------- - ---------- -\n\n";
+		clearscreen();
+	}
+	else {
+		std::cout << "\nDate not found.\n";
 		clearscreen();
 		return;
 	}

@@ -9,5 +9,6 @@ void addrecord(User& currentUser, std::vector<Record>& myRecord);
 void updaterecord(User& currentUser, std::vector<Record>& myRecord);
 void displayrecord(User& currentUser, std::vector<Record>& myRecord);
 void deleterecord(User& currentUser, std::vector<Record>& myRecord);
+void searchrecord(User& currentUser, std::vector<Record>& myRecord);
 
 #endif
