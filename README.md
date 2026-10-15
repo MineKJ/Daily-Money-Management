@@ -11,7 +11,7 @@ A simple console based system to record your savings and expenses. This system i
 
 -`Delete Record`
 
--`Search Record` (Coming soon)
+-`Search Record`
 
 ## How to download
 Simply click on the [Release](https://github.com/MineKJ/Daily-Money-Management/releases) Page from here or from the right of this page and download the `Daily.Money.Management.System.exe` file and direct run it on your computer.
