@@ -204,12 +204,22 @@ void updaterecord(User& currentUser, std::vector<Record>& myRecord) {
 		clearscreen();
 		return;
 	}
+	std::string dayJ, monthJ, yearJ, dayMin, monthMin, yearMin;
 	size_t index = currentUser.myRecord.size();
 	//sort record date with selection sort
 	for (size_t i = 0; i < index - 1; ++i) {
 		size_t minIndex = i;
 		for (size_t j = i + 1; j < index; ++j) {
-			if (currentUser.myRecord[j].date < currentUser.myRecord[minIndex].date) {
+			dayJ = currentUser.myRecord[j].date.substr(0, 2);		//first insert day, month and year into string j and minIndex
+			monthJ = currentUser.myRecord[j].date.substr(3, 2);
+			yearJ = currentUser.myRecord[j].date.substr(6, 4);
+			std::string sortDateJ = yearJ + monthJ + dayJ; //changing it from DDMMYYYY to YYYYMMDD to detect the ascending order of date
+
+			dayMin = currentUser.myRecord[minIndex].date.substr(0, 2);
+			monthMin = currentUser.myRecord[minIndex].date.substr(3, 2);
+			yearMin = currentUser.myRecord[minIndex].date.substr(6, 4);
+			std::string sortDateMin = yearMin + monthMin + dayMin;
+			if (sortDateJ < sortDateMin) {			//compare if dateJ is smaller than dateMin, then swap position
 				minIndex = j;
 			}
 		}
@@ -687,5 +697,5 @@ void searchrecord(User& currentUser, std::vector<Record>& myRecord) {
 		clearscreen();
 		return;
 	}
-	
+
 }
